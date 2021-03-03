@@ -1,55 +1,9 @@
-const path = require('path');
-const { VueLoaderPlugin } = require('vue-loader');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const { CleanWebpackPlugin } = require('clean-webpack-plugin');
-
-module.exports = {
-  entry: './src/index.ts',
-  output: {
-    filename: '[name].[contenthash:8].js',
-    chunkFilename: 'js/[name].[contenthash:8].js',
-    path: path.resolve(__dirname, 'dist'),
-  },
-  resolve: {
-    // 将 `.ts` 添加为一个可解析的扩展名。
-    extensions: ['.ts', '.js', 'vue']
-  },
-  module: {
-    rules: [
-      {
-        test: /\.vue$/,
-        loader: 'vue-loader'
-      },
-      {
-        test: /\.js$/,
-        loader: 'babel-loader',
-         exclude: file => (
-          /node_modules/.test(file) &&
-          !/\.vue\.js/.test(file)
-        )
-      },
-      {
-        test: /\.ts$/,
-        loader: 'ts-loader',
-        options: { appendTsSuffixTo: [/\.vue$/] }
-      },
-       {
-        test: /\.css$/,
-        use: [
-          'vue-style-loader',
-          'css-loader'
-        ]
-      }
-    ]
-  },
+const merge = require('webpack-merge');
+const common = require('./webpack.common.js')
+module.exports = merge(common, {
+  mode: 'development',
+  devtool: 'inline-source-map',
   devServer: {
     contentBase: './dist'
-  },
-  plugins: [
-    new VueLoaderPlugin(),
-    new HtmlWebpackPlugin({
-      template: path.resolve('./', 'public/index.html')
-    }),
-    new CleanWebpackPlugin(),
-  ]
-};
+  }
+})
