@@ -4,7 +4,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
 module.exports = {
-  entry: './src/index.js',
+  entry: './src/index.ts',
   output: {
     filename: '[name].[contenthash:8].js',
     chunkFilename: 'js/[name].[contenthash:8].js',
@@ -47,6 +47,7 @@ module.exports = {
       }
     ]
   },
+  // externals: ['VueBootstrapTypeahead','bootstrap-vue'],
   plugins: [
     new VueLoaderPlugin(),
     new HtmlWebpackPlugin({

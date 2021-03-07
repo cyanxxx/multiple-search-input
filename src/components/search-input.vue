@@ -18,7 +18,8 @@
         v-bind="$attrs"
         @focus="isFocused = true"
         @blur="handleBlur"
-        @input="handleInput($event.target.value)"
+        @keyup.enter="handleEnter"
+        @input="handleTextInput"
       />
       <div v-if="$slots.append || append" class="input-group-append">
         <slot name="append">
@@ -73,58 +74,85 @@
 <script lang="ts">
 import { Component, Prop, Watch } from 'vue-property-decorator'
 import VueBootstrapTypeahead from 'vue-bootstrap-typeahead'
-import { mixins } from 'vue-class-component';
+import { mixins } from 'vue-class-component'
 
 @Component({
   name: 'SearchInput'
 })
-export default class SearchInput extends mixins (VueBootstrapTypeahead) {
-  @Prop({type: String}) tagsId!: string 
+export default class SearchInput extends mixins(VueBootstrapTypeahead) {
+  @Prop({ type: String }) tagsId!: string
+  @Prop({ type: Boolean }) canFreeText!: boolean;
   height = 250
   firstCalu = false
+  blurFromClick = false
 
   @Watch('isFocused')
-  setHeight(newVal: boolean) {
-    if(newVal){
+  setHeight (newVal: boolean) {
+    if (newVal) {
       this.calcuHeight()
     }
   }
 
-  calcuHeight() {
+  calcuHeight () {
     const el = this.$refs.input as Element
-    const {top: inputTop, height: inputHeight} = el.getBoundingClientRect()
-    const height = window.innerHeight;
+    const { top: inputTop, height: inputHeight } = el.getBoundingClientRect()
+    const height = window.innerHeight
     //  50为padding和跟页面底端保持一定距离
     this.height = height - inputTop - inputHeight - 50
   }
 
-    handleHit(evt: {data: string; text: string}) {
-      if (typeof this.value !== 'undefined') {
-        this.$emit('input', evt.text)
-      }
-      this.inputValue = evt.text
-      this.$emit('hit', evt.data)
-      ;(this.$refs.input as HTMLInputElement).blur()
-      this.inputValue = ''
-      this.isFocused = false
-    }
+  handleTextInput($event: any) {
+    this.$emit('stop-fetch', false)
+    this.handleInput($event.target.value)
+  }
 
-     handleBlur(evt: {relatedTarget: Element}) {
-      // relatedTarget: 进入到哪个元素，仅对可以focus的元素有效
-      const tgt = evt.relatedTarget
-      if (tgt && tgt.classList.contains('vbst-item')) {
-        return
-      }
-      //  当点自己内部的菜单滚动条不关闭，别的tags会关闭
-      if (tgt && tgt.classList.contains('_tags') && tgt.id === "" + this.tagsId) {
-        return
-      }
-      this.inputValue = ''
-      this.isFocused = false
+  handleHit (evt: {data: string; text: string}) {
+    if (typeof this.value !== 'undefined') {
+      this.$emit('stop-fetch', true)
+      this.$emit('input', evt.text)
     }
+    this.inputValue = evt.text
+    this.$emit('hit', evt.data)
+    ;(this.$refs.input as HTMLInputElement).blur()
+    this.inputValue = ''
+    this.isFocused = false
+  }
 
-    setFocused() {
-       ;(this.$refs.input as HTMLInputElement).focus()
+  handleBlur (evt: {relatedTarget: Element}) {
+    // relatedTarget: 进入到哪个元素，仅对可以focus的元素有效
+    const tgt = evt.relatedTarget
+    if (tgt && tgt.classList.contains('vbst-item')) {
+      return
     }
+    //  当点自己内部的菜单滚动条不关闭，别的tags会关闭
+    if (tgt && tgt.classList.contains('_tags') && tgt.id === '' + this.tagsId) {
+      return
+    }
+    if(this.canFreeText){
+      this.$emit('hit', {value: this.inputValue, text: this.inputValue})
+    }else{
+      if(this.data.find((el: {value: string}) => el.value === this.inputValue)){
+          this.$emit('hit', {value: this.inputValue, text: this.inputValue})
+      }
+    } 
+    
+    this.inputValue = ''
+    this.isFocused = false
+  }
+
+  handleEnter() {
+    if(this.canFreeText){
+      this.$emit('hit', {value: this.inputValue, text: this.inputValue})
+    }else{
+     if(this.data.find((el: {value: string}) => el.value === this.inputValue)){
+          this.$emit('hit', {value: this.inputValue, text: this.inputValue})
+      }
+    }
+   this.inputValue = ''
+  }
+
+  setFocused () {
+    ;(this.$refs.input as HTMLInputElement).focus()
+  }
 }
 </script>
