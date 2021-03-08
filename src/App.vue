@@ -7,7 +7,7 @@
 </template>
 <script lang='ts'>
 import { Vue, Component } from 'vue-property-decorator'
-import MultipleSearchInput, { SelectOption } from './components/multiple-search-input.vue'
+import MultipleSearchInput, { SelectOption } from './lib/multiple-search-input.vue'
 @Component({
   components: {
     MultipleSearchInput

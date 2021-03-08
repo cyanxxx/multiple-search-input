@@ -1,9 +1,10 @@
-const merge = require('webpack-merge');
+const {merge} = require('webpack-merge');
 const common = require('./webpack.common.js')
 module.exports = merge(common, {
+  entry: './src/lib/index.js',
   mode: 'production',
   output: {
-    library: 'tagInput',
+    library: 'multipleSearchInput',
     libraryTarget: 'umd'
   }
 })
