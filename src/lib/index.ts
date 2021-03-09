@@ -1,7 +1,8 @@
 import MultipleSearchInput from './multiple-search-input.vue';
-export { SelectOption } from './multiple-search-input.vue';
+export type { SelectOption } from './multiple-search-input.vue';
+import vue from 'vue'
 const multipleSearchInputPlugin = {
-    install(Vue) {
+    install(Vue: typeof vue) {
         Vue.component(MultipleSearchInput.name, MultipleSearchInput) 
     }
 }
