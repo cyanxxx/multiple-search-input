@@ -1,27 +1,20 @@
 {
-   "compilerOptions": {
+  "compilerOptions": {
     "target": "esnext",
-    "lib": [
-        "dom",
-        "dom.iterable",
-        "esnext"
-    ],
-        "experimentalDecorators": true,
-        "allowJs": true,
-        "skipLibCheck": true,
-        "esModuleInterop": true,
-        "allowSyntheticDefaultImports": true,
-        "strict": true,
-        "forceConsistentCasingInFileNames": true,
-        "module": "esnext",
-        "moduleResolution": "node",
-        "resolveJsonModule": true,
-        "isolatedModules": true,
-        "jsx": "preserve",
-        "strictFunctionTypes": false /* Enable strict checking of function types. */
-    },
-    "include": [
-        "src",
-        "types"
-    ],
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "experimentalDecorators": true,
+    "allowJs": false,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "preserve",
+    "strictFunctionTypes": false /* Enable strict checking of function types. */
+  },
+  "include": ["src", "types"]
 }

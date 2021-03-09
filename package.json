@@ -1,14 +1,20 @@
 {
-  "name": "tag-input",
+  "name": "multiple-search-input",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "dist/multipleSearchInput.min.js",
+  "types": "index.d.ts",
   "dependencies": {
     "bootstrap": "^4.6.0",
     "bootstrap-vue": "^2.21.2",
     "lodash-es": "^4.17.21",
     "vue": "^2.6.12",
     "vue-bootstrap-typeahead": "^0.2.6"
+  },
+  "peerDependencies": {
+    "vue-class-component": "^7.2.6",
+    "vue-property-decorator": "^9.1.2",
+    "bootstrap-vue": "^2.21.2"
   },
   "devDependencies": {
     "@babel/core": "^7.12.13",

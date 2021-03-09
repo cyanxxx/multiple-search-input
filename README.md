@@ -1,5 +1,6 @@
 ## Tag-Input
 ### 基于vue-bootstrap-typeahead二次开发组件，支持输入多个tag和tag的远程搜索组件。
+### 需要vue-property-decorator, vue-class-component, bootstrap的b-form-tags全局注册
 ### Prop
 |  prop   | type  |  description |
 | :----   | :----   | :----  |
