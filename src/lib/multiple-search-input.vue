@@ -98,6 +98,14 @@ export default class MultipleSearchInput<T> extends Vue {
   }
 
   @Watch('options', { immediate: true })
+  defaultTagByOption (newVal: SelectOption<T>[], preVal: SelectOption<T>[]) {
+    //  初始化的时候，本身有值，但没写进tags
+    if(newVal.length > 0) {
+      this.setDefaultTag(this.value, newVal)
+    }
+  }
+
+  @Watch('list', { immediate: true })
   defaultTagByList (newVal: SelectOption<T>[], preVal: SelectOption<T>[]) {
     //  初始化的时候，本身有值，但没写进tags
     if(newVal.length > 0) {
