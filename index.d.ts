@@ -1,4 +1,4 @@
 import { PluginObject } from 'vue';
-export { SelectOption } from "./src/lib";
-export const MultipleSearchInput: PluginObject;
+export interface SelectOption<T> {text: string; value: T}
+export const MultipleSearchInput: PluginObject<null>;
 export const multipleSearchInputPlugin;
