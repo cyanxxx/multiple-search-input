@@ -129,6 +129,17 @@ export default class MultipleSearchInput<T> extends Vue {
     this.$emit('get-option', val)
   }
 
+  setDefaulOption() {
+    if(this.options.length === 0 && this.list.length > 0 && this.curOptions.length === 0) {
+      const curValue = this.tagsId
+      this.list.forEach(el => {
+        if(curValue.includes(el.value)){
+          this.curOptions.push(el)
+        }
+      })
+    }
+  }
+
   setDefaultTag(value: T[], list: SelectOption<T>[]){
      if (value && value.length > 0 && this.tags.length === 0) {
       const options = list
@@ -151,6 +162,7 @@ export default class MultipleSearchInput<T> extends Vue {
         if (typeof el === 'string') return el.trim() as unknown as T
         else return el
       })
+      this.setDefaulOption()
     }
     else if (value && value.length === 0) {
       this.tags = []
@@ -201,7 +213,7 @@ export default class MultipleSearchInput<T> extends Vue {
     if(this.handleValidate && !this.handleValidate(item.value)) return
     // 检查不重复添加已经存在的tag
     if(this.tagsId.find(el => el === item.value))return
-    !(this.curOptions.find(el => el.value === item.value)) && this.curOptions.push(item)
+    this.options.length === 0 && !(this.curOptions.find(el => el.value === item.value)) && this.curOptions.push(item)
     addTag(item.text)
     this.tagsId.push(item.value)
     this.isStringValue ? this.$emit('change', this.tagsId[0]) : this.$emit('change', this.tagsId)
