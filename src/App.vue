@@ -21,6 +21,11 @@
       <p>已选值： {{forthVal}}, list: {{asyncDefaultValue}}</p>
     </div>
     <div>
+      <p>处理前缀后缀空白值</p>
+       <MultipleSearchInput v-model="withTrimVal" :list="notTrimList" canFreeText></MultipleSearchInput>
+      <p>已选值： {{withTrimVal}}, list: {{notTrimList}}</p>
+    </div>
+    <div>
       <p>远程拿value默认值，远程后拿到值本地搜索</p>
        <MultipleSearchInput v-model="fifthVal" :list="asyncDefaultValue"></MultipleSearchInput>
        <p>已选值： {{fifthVal}}, list: {{asyncDefaultValue}}</p>
@@ -59,6 +64,8 @@ export default class App extends Vue {
       text:'Bear' , value: 'b'
     },
   ]
+  withTrimVal = [' a ']
+  notTrimList = []
   asyncList: SelectOption<string>[] = []
   asyncDefaultValue: SelectOption<string>[] = []
   thirdVal: string[] = []

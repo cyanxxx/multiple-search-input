@@ -142,10 +142,14 @@ export default class MultipleSearchInput<T> extends Vue {
         }
       })
       this.tags = textShowArr
+      // 清洗数据
       this.tagsId = this.formatValue.filter(el => {
         if (typeof el === 'string') return !!el
         else if (typeof el === 'undefined') return false
         return true
+      }).map(el => {
+        if (typeof el === 'string') return el.trim() as unknown as T
+        else return el
       })
     }
     else if (value && value.length === 0) {
