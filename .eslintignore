@@ -2,3 +2,4 @@ src/__tests__
 *.d.ts
 config/*
 tsconfig.json
+node_modules

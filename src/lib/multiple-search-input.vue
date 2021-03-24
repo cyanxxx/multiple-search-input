@@ -11,6 +11,7 @@
         class="multiple-input _tags"
         :input-id="label"
         :disabled="disabled"
+        tag-class="text-wrap"
         v-bind="$attrs"
         add-on-change
         @focus.native="handleFocus"
@@ -18,8 +19,8 @@
         <template
           v-slot="{ tags, addTag, disabled, removeTag }"
         >
-          <ul v-if="tags.length > 0" class="b-form-tags-list list-inline d-inline-block mb-0">
-            <li v-for="tag in tags" :key="tag" class="list-inline-item">
+          <ul v-if="tags.length > 0" class="b-form-tags-list list-inline d-inline-block mb-0" :style="`${oneText? 'width: 100%' : ''}`">
+            <li v-for="tag in tags" :key="tag" class="list-inline-item" :style="`${oneText? 'width: 100%' : ''}`">
               <b-form-tag
                 :title="tag"
                 :disabled="disabled"
@@ -42,7 +43,7 @@
 <script lang="ts">
 import { Vue, Component, Prop, Model, Watch } from 'vue-property-decorator'
 import SearchInput from './search-input.vue'
-import { debounce } from "lodash-es";
+import { debounce } from "lodash";
 export interface SelectOption<T> {text: string; value: T}
 @Component({
   name: 'MultipleSearchInput',
@@ -68,7 +69,12 @@ export default class MultipleSearchInput<T> extends Vue {
   @Prop({ type: Boolean }) disabled!: boolean
   @Prop({ type: Boolean }) canFreeText!: boolean;
   @Prop({ type: Function }) handleValidate!: (val: T) => boolean;
-  @Model('change', { type: Array }) readonly value!: T[]
+  //  只有一个值的时候
+  @Model('change', { type: [Array,String] }) readonly value!: T[] | T
+
+  get formatValue() {
+    return (typeof this.value === 'string'? [this.value] : this.value) as T[]
+  }
 
   curOptions: SelectOption<T>[] = []
   newTag = ''
@@ -81,6 +87,10 @@ export default class MultipleSearchInput<T> extends Vue {
     return this.limit === 1
   }
 
+  get isStringValue() {
+    return typeof this.value === 'string'
+  }
+
   get inputDisable() {
     return this.disabled
   }
@@ -89,11 +99,12 @@ export default class MultipleSearchInput<T> extends Vue {
     return [...this.options, ...this.curOptions]
   }
 
-  @Watch('value', { immediate: true })
+  @Watch('formatValue', { immediate: true })
   defaultTagByValue (newVal: T[], oldVal: T[]) {
     //  初始化的时候，本身有值，但没写进tags
     if(newVal){
-      this.setDefaultTag(newVal, this.list)
+      const list = this.options.length > 0 ? this.options : this.list
+      this.setDefaultTag(newVal, list)
     }
   }
 
@@ -101,7 +112,7 @@ export default class MultipleSearchInput<T> extends Vue {
   defaultTagByOption (newVal: SelectOption<T>[], preVal: SelectOption<T>[]) {
     //  初始化的时候，本身有值，但没写进tags
     if(newVal.length > 0) {
-      this.setDefaultTag(this.value, newVal)
+      this.setDefaultTag(this.formatValue, newVal)
     }
   }
 
@@ -109,7 +120,7 @@ export default class MultipleSearchInput<T> extends Vue {
   defaultTagByList (newVal: SelectOption<T>[], preVal: SelectOption<T>[]) {
     //  初始化的时候，本身有值，但没写进tags
     if(newVal.length > 0) {
-      this.setDefaultTag(this.value, newVal)
+      this.setDefaultTag(this.formatValue, newVal)
     }
   }
 
@@ -131,7 +142,7 @@ export default class MultipleSearchInput<T> extends Vue {
         }
       })
       this.tags = textShowArr
-      this.tagsId = this.value.filter(el => {
+      this.tagsId = this.formatValue.filter(el => {
         if (typeof el === 'string') return !!el
         else if (typeof el === 'undefined') return false
         return true
@@ -140,6 +151,12 @@ export default class MultipleSearchInput<T> extends Vue {
     else if (value && value.length === 0) {
       this.tags = []
       this.tagsId = []
+    }
+    //  针对只有一个值的，如果value被外面置空
+    else if(value && value.length > 0 && !value[0]){
+      this.tags = []
+      this.tagsId = []
+      this.newTag = ''
     }
   }
 
@@ -160,7 +177,7 @@ export default class MultipleSearchInput<T> extends Vue {
     //  不存在list的时候直接删除
     const deleteTagId = obj ? obj.value : tag
     deleteTagId && (this.tagsId = this.tagsId.filter(el => el !== deleteTagId))
-    this.$emit('change', this.tagsId)
+    this.isStringValue ? this.$emit('change', '') : this.$emit('change', this.tagsId)
     this.newTag = ''
   }
 
@@ -175,13 +192,15 @@ export default class MultipleSearchInput<T> extends Vue {
   }
 
   handleHit (addTag: (tag: string) => void, item: SelectOption<T>) {
+    //  去掉blur时为空值的情况
+    if(!item.value)return
     if(this.handleValidate && !this.handleValidate(item.value)) return
     // 检查不重复添加已经存在的tag
     if(this.tagsId.find(el => el === item.value))return
     !(this.curOptions.find(el => el.value === item.value)) && this.curOptions.push(item)
     addTag(item.text)
     this.tagsId.push(item.value)
-    this.$emit('change', this.tagsId)
+    this.isStringValue ? this.$emit('change', this.tagsId[0]) : this.$emit('change', this.tagsId)
   }
 }
 </script>

@@ -129,7 +129,8 @@ export default class SearchInput extends mixins(VueBootstrapTypeahead) {
       return
     }
     if(this.canFreeText){
-      this.$emit('hit', {value: this.inputValue, text: this.inputValue})
+       const trimValue = this.inputValue.trim()
+       this.$emit('hit', {value: trimValue, text: trimValue})
     }else{
       if(this.data.find((el: {value: string}) => el.value === this.inputValue)){
           this.$emit('hit', {value: this.inputValue, text: this.inputValue})
@@ -142,7 +143,8 @@ export default class SearchInput extends mixins(VueBootstrapTypeahead) {
 
   handleEnter() {
     if(this.canFreeText){
-      this.$emit('hit', {value: this.inputValue, text: this.inputValue})
+      const trimValue = this.inputValue.trim()
+      this.$emit('hit', {value: trimValue, text: trimValue})
     }else{
      if(this.data.find((el: {value: string}) => el.value === this.inputValue)){
           this.$emit('hit', {value: this.inputValue, text: this.inputValue})
