@@ -128,12 +128,13 @@ export default class SearchInput extends mixins(VueBootstrapTypeahead) {
     if (tgt && tgt.classList.contains('_tags') && tgt.id === '' + this.tagsId) {
       return
     }
+    const trimValue = this.inputValue.trim()
     if(this.canFreeText){
-       const trimValue = this.inputValue.trim()
        this.$emit('hit', {value: trimValue, text: trimValue})
     }else{
-      if(this.data.find((el: {value: string}) => el.value === this.inputValue)){
-          this.$emit('hit', {value: this.inputValue, text: this.inputValue})
+      const match = this.data.filter((el: {value: string; text:string}) => el.text === trimValue)
+      if(match.length > 0){
+        this.$emit('hit', {value: match[0].value, text: match[0].text})
       }
     } 
     
@@ -142,12 +143,13 @@ export default class SearchInput extends mixins(VueBootstrapTypeahead) {
   }
 
   handleEnter() {
+   const trimValue = this.inputValue.trim()
     if(this.canFreeText){
-      const trimValue = this.inputValue.trim()
       this.$emit('hit', {value: trimValue, text: trimValue})
     }else{
-     if(this.data.find((el: {value: string}) => el.value === this.inputValue)){
-          this.$emit('hit', {value: this.inputValue, text: this.inputValue})
+      const match = this.data.filter((el: {value: string; text:string}) => el.text === trimValue)
+      if(match.length > 0){
+        this.$emit('hit', {value: match[0].value, text: match[0].text})
       }
     }
    this.inputValue = ''
