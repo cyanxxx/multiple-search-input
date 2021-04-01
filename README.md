@@ -25,6 +25,8 @@ Vue.use(multipleSearchInputPlugin);
 | fieldClass  | string | 设置整体div的class |
 | disabled  | boolean | disabled |
 | canFreeText  | boolean | 不检查是否在下拉内，可以直接新建tag |
+| busy| boolean | 使用无限滚动时翻页设置成true,load数据后改成false|
+| infinite| boolean | 是否采用无限滚动 |
 | handleValidate  | (val: T) => boolean | 控制能否加入tag内
 | value [v-model] | T[] | tag的value
 
@@ -32,5 +34,6 @@ Vue.use(multipleSearchInputPlugin);
 |  event   | type  |  description |
 | :----   | :----   | :----  |
 | fetch-data  | (val: string) => void; | 输入之后得到的值（可以在此调用远程搜索api） |
+| fetch-more-data | (val: string) => void; | 触发滚动到底部的时候触发 | 
 | get-option | (val: {text: string; value: T}<T>[]) => void; | 获取当前已被选中的tag option(对于得不到初始option,在页面返回的时候可以在option中传入) |
 | change[v-model] | (val: string[]) => void; |  |

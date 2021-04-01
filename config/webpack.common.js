@@ -36,6 +36,9 @@ module.exports = {
       },
     ],
   },
+  resolve: {
+    extensions: ['.ts', '.vue', '.js']
+  },
   plugins: [
     new VueLoaderPlugin(),
     new HtmlWebpackPlugin({

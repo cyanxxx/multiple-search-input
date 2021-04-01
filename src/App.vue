@@ -30,6 +30,11 @@
        <MultipleSearchInput v-model="fifthVal" :list="asyncDefaultValue"></MultipleSearchInput>
        <p>已选值： {{fifthVal}}, list: {{asyncDefaultValue}}</p>
     </div>
+    <div>
+      <p>远程拿value默认值，翻页管理</p>
+       <MultipleSearchInput v-model="longVal" :list="longList" infinite @fetch-data="fetchOtherData" @fetch-more-data="fetchMoreData"></MultipleSearchInput>
+       <p>已选值： {{longVal}}, list: {{longList}}</p>
+    </div>
   </div>
 </template>
 <script lang='ts'>
@@ -64,6 +69,7 @@ export default class App extends Vue {
       text:'Bear' , value: 'b'
     },
   ]
+  longList: SelectOption<string>[] = []
   withTrimVal = [' a ']
   notTrimList = []
   asyncList: SelectOption<string>[] = []
@@ -71,6 +77,11 @@ export default class App extends Vue {
   thirdVal: string[] = []
   forthVal: string[] = []
   fifthVal: string[] = []
+  longVal: string[] = []
+  page = 1
+  total = 200
+  loadedAll = false
+  busy = false
 
   created() {
   setTimeout(() => {
@@ -79,6 +90,12 @@ export default class App extends Vue {
     setTimeout(() => {
       this.asyncDefaultValue = [...this.list]
     }, 1000)
+    for(let i = 0; i< 50;i++) {
+      this.longList.push({
+        text: "" + i,
+        value: "" + i
+      })
+    }
   }
 
   getCurOptiton(optiton: SelectOption<string>[]){
@@ -90,6 +107,46 @@ export default class App extends Vue {
       console.log(val)
       this.asyncList = this.list.filter(el => el.text.includes(val))
     }, 1000)
+  }
+
+  fetchOtherData(val: string) {
+    this.busy = true
+     setTimeout(() => {
+      this.longList = this.getFakeData(val)
+      this.page = 1
+      this.total = 100
+      this.loadedAll = false
+    }, 1000)
+  }
+
+  getFakeData(val: string) {
+    let list = []
+    for(let i = 0; i<50;i++) {
+      list.push({
+        text: i + val,
+        value: i + val
+      })
+    }
+    return list
+  }
+
+  fetchMoreData(val: string) {
+    console.log('load')
+    if(!this.loadedAll) {
+      this.busy = true
+      setTimeout(() => {
+        const page = this.page
+         for(let i = page * 50; i< page * 50 + 50; i++) {
+          this.longList.push({
+          text: val + i,
+          value: val + i
+          })
+        }
+        this.busy = false
+        this.page ++
+        this.loadedAll = this.page * 50 === this.total
+      }, 1000)
+    }
   }
 
 }

@@ -32,8 +32,9 @@
                 </b-form-tag>
             </li>
           </ul>
-         <search-input v-if="!reachLimit && !inputDisable" ref="input" v-model="newTag" :tags-id="id" :canFreeText="canFreeText" :disabled="reachLimit" class="d-inline-block" inputClass="border-0" :data="showList"  :serializer="item => item.text" v-bind="$attrs" :minMatchingChars="1" :maxMatches="100" :style="`width: ${oneText ? '100%' : 'auto'}`" @hit="handleHit(addTag, $event)"
-           @stop-fetch="handleCancelFetch"/>
+         <search-input v-if="!reachLimit && !inputDisable" ref="input" v-model="newTag" :tags-id="id" :canFreeText="canFreeText" :disabled="reachLimit" :busy="busy" class="d-inline-block" inputClass="border-0" :data="showList"  :serializer="item => item.text" v-bind="$attrs" :minMatchingChars="1" :maxMatches="100" :style="`width: ${oneText ? '100%' : 'auto'}`" @hit="handleHit(addTag, $event)"
+           @stop-fetch="handleCancelFetch"
+           @fetch-more-data="fetchMoreData"/>
         </template>
       </b-form-tags>
     </div>
@@ -41,7 +42,7 @@
   </div>
 </template>
 <script lang="ts">
-import { Vue, Component, Prop, Model, Watch } from 'vue-property-decorator'
+import { Vue, Component, Prop, Model, Watch, Provide } from 'vue-property-decorator'
 import SearchInput from './search-input.vue'
 import { debounce } from "lodash";
 export interface SelectOption<T> {text: string; value: T}
@@ -68,7 +69,11 @@ export default class MultipleSearchInput<T> extends Vue {
   @Prop({ type: String }) fieldClass!: string
   @Prop({ type: Boolean }) disabled!: boolean
   @Prop({ type: Boolean }) canFreeText!: boolean;
+  @Prop({ type: Boolean }) infinite!: boolean;
+  @Prop({ type: Boolean }) busy!: boolean;
   @Prop({ type: Function }) handleValidate!: (val: T) => boolean;
+  @Provide()
+  asyncMatch = this.infinite
   //  只有一个值的时候
   @Model('change', { type: [Array,String] }) readonly value!: T[] | T
 
@@ -217,6 +222,13 @@ export default class MultipleSearchInput<T> extends Vue {
     addTag(item.text)
     this.tagsId.push(item.value)
     this.isStringValue ? this.$emit('change', this.tagsId[0]) : this.$emit('change', this.tagsId)
+    console.log(this.newTag)
+    this.newTag = ''
+    this.$emit('fetch-data', '')
+  }
+
+  fetchMoreData() {
+    this.$emit('fetch-more-data', this.newTag)
   }
 }
 </script>

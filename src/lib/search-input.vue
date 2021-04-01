@@ -27,28 +27,55 @@
         </slot>
       </div>
     </div>
-    <vue-bootstrap-typeahead-list
-      v-show="isFocused && data.length > 0"
-      ref="list"
-      :style="`max-height:${height}px`"
-      class="vbt-autcomplete-list"
-      :query="inputValue"
-      :data="formattedData"
-      :background-variant="backgroundVariant"
-      :text-variant="textVariant"
-      :maxMatches="maxMatches"
-      :minMatchingChars="minMatchingChars"
-      @hit="handleHit"
-    >
-      <!-- pass down all scoped slots -->
-      <template v-for="(slot, slotName) in $scopedSlots" :slot="slotName" slot-scope="{ data, htmlText }">
-        <slot :name="slotName" v-bind="{ data, htmlText }"></slot>
-      </template>
-      <!-- below is the right solution, however if the user does not provide a scoped slot, vue will still set $scopedSlots.suggestion to a blank scope
-      <template v-if="$scopedSlots.suggestion" slot="suggestion" slot-scope="{ data, htmlText }">
-        <slot name="suggestion" v-bind="{ data, htmlText }" />
-      </template>-->
-    </vue-bootstrap-typeahead-list>
+      <MatchList
+        v-if="asyncMatch"
+        v-infinite-scroll="loadMore" 
+        infinite-scroll-disabled="busy" 
+        infinite-scroll-distance="10"
+        v-show="isFocused && data.length > 0"
+        ref="list"
+        :style="`max-height:${height}px`"
+        class="vbt-autcomplete-list"
+        :query="inputValue"
+        :data="formattedData"
+        :background-variant="backgroundVariant"
+        :text-variant="textVariant"
+        :maxMatches="maxMatches"
+        :minMatchingChars="minMatchingChars"
+        @hit="handleHit"
+      >
+        <!-- pass down all scoped slots -->
+        <template v-for="(slot, slotName) in $scopedSlots" :slot="slotName" slot-scope="{ data, htmlText }">
+          <slot :name="slotName" v-bind="{ data, htmlText }"></slot>
+        </template>
+        <!-- below is the right solution, however if the user does not provide a scoped slot, vue will still set $scopedSlots.suggestion to a blank scope
+        <template v-if="$scopedSlots.suggestion" slot="suggestion" slot-scope="{ data, htmlText }">
+          <slot name="suggestion" v-bind="{ data, htmlText }" />
+        </template>-->
+      </MatchList>
+      <MatchList
+        v-else
+        v-show="isFocused && data.length > 0"
+        ref="list"
+        :style="`max-height:${height}px`"
+        class="vbt-autcomplete-list"
+        :query="inputValue"
+        :data="formattedData"
+        :background-variant="backgroundVariant"
+        :text-variant="textVariant"
+        :maxMatches="maxMatches"
+        :minMatchingChars="minMatchingChars"
+        @hit="handleHit"
+      >
+        <!-- pass down all scoped slots -->
+        <template v-for="(slot, slotName) in $scopedSlots" :slot="slotName" slot-scope="{ data, htmlText }">
+          <slot :name="slotName" v-bind="{ data, htmlText }"></slot>
+        </template>
+        <!-- below is the right solution, however if the user does not provide a scoped slot, vue will still set $scopedSlots.suggestion to a blank scope
+        <template v-if="$scopedSlots.suggestion" slot="suggestion" slot-scope="{ data, htmlText }">
+          <slot name="suggestion" v-bind="{ data, htmlText }" />
+        </template>-->
+      </MatchList>
   </div>
 </template>
 <style>
@@ -72,16 +99,27 @@
 }
 </style>
 <script lang="ts">
-import { Component, Prop, Watch } from 'vue-property-decorator'
+import { Component, Inject, Prop, Watch } from 'vue-property-decorator'
 import VueBootstrapTypeahead from 'vue-bootstrap-typeahead'
 import { mixins } from 'vue-class-component'
-
+import infiniteScroll from 'vue-infinite-scroll'
+import MatchList from './match-list.vue'
 @Component({
-  name: 'SearchInput'
+  name: 'SearchInput',
+  directives: {
+    infiniteScroll
+  },
+  components: {
+    MatchList
+  }
 })
 export default class SearchInput extends mixins(VueBootstrapTypeahead) {
   @Prop({ type: String }) tagsId!: string
   @Prop({ type: Boolean }) canFreeText!: boolean;
+  @Prop({ type: Boolean }) busy!: boolean;
+  @Inject({default: false}) asyncMatch!: boolean;
+  
+  maxHeight = 250
   height = 250
   firstCalu = false
   blurFromClick = false
@@ -98,7 +136,7 @@ export default class SearchInput extends mixins(VueBootstrapTypeahead) {
     const { top: inputTop, height: inputHeight } = el.getBoundingClientRect()
     const height = window.innerHeight
     //  50为padding和跟页面底端保持一定距离
-    this.height = height - inputTop - inputHeight - 50
+    this.height = this.maxHeight > height - inputTop - inputHeight - 50? height - inputTop - inputHeight - 50 : this.maxHeight
   }
 
   handleTextInput($event: any) {
@@ -157,6 +195,10 @@ export default class SearchInput extends mixins(VueBootstrapTypeahead) {
 
   setFocused () {
     ;(this.$refs.input as HTMLInputElement).focus()
+  }
+
+  loadMore() {
+    this.$emit('fetch-more-data')
   }
 }
 </script>
