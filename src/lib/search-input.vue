@@ -29,11 +29,11 @@
     </div>
       <MatchList
         v-if="asyncMatch"
-        v-infinite-scroll="loadMore" 
-        infinite-scroll-disabled="busy" 
+        v-show="isFocused && data.length > 0" 
+        ref="list" 
+        v-infinite-scroll="loadMore"
+        infinite-scroll-disabled="busy"
         infinite-scroll-distance="10"
-        v-show="isFocused && data.length > 0"
-        ref="list"
         :style="`max-height:${height}px`"
         class="vbt-autcomplete-list"
         :query="inputValue"
@@ -170,7 +170,7 @@ export default class SearchInput extends mixins(VueBootstrapTypeahead) {
     if(this.canFreeText){
        this.$emit('hit', {value: trimValue, text: trimValue})
     }else{
-      const match = this.data.filter((el: {value: string; text:string}) => el.text === trimValue)
+      const match = this.data.filter((el: {value: string; text: string}) => el.text === trimValue)
       if(match.length > 0){
         this.$emit('hit', {value: match[0].value, text: match[0].text})
       }
@@ -185,7 +185,7 @@ export default class SearchInput extends mixins(VueBootstrapTypeahead) {
     if(this.canFreeText){
       this.$emit('hit', {value: trimValue, text: trimValue})
     }else{
-      const match = this.data.filter((el: {value: string; text:string}) => el.text === trimValue)
+      const match = this.data.filter((el: {value: string; text: string}) => el.text === trimValue)
       if(match.length > 0){
         this.$emit('hit', {value: match[0].value, text: match[0].text})
       }

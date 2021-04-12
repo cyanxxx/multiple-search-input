@@ -16,8 +16,8 @@ import { Vue, Component, Prop } from 'vue-property-decorator'
 @Component({
   name: 'matchItem'
 })
-export default class matchItem extends Vue{
-  @Prop({type: Object}) data!: {text: string, value: string};
+export default class MatchItem extends Vue{
+  @Prop({type: Object}) data!: {text: string; value: string};
   @Prop({type: String, default: ''}) query!: string;
   @Prop({type: String, default: ''}) htmlText!: string;
   @Prop({type: String, default: ''}) textVariant!: string

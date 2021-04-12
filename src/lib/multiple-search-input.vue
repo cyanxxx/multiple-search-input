@@ -74,11 +74,12 @@ export default class MultipleSearchInput<T> extends Vue {
   @Prop({ type: Function }) handleValidate!: (val: T) => boolean;
   @Provide()
   asyncMatch = this.infinite
+
   //  只有一个值的时候
   @Model('change', { type: [Array,String] }) readonly value!: T[] | T
 
   get formatValue() {
-    return (typeof this.value === 'string'? [this.value] : this.value) as T[]
+    return (typeof this.value === 'string'? this.value? [this.value] : [] : this.value) as T[]
   }
 
   curOptions: SelectOption<T>[] = []
@@ -87,6 +88,7 @@ export default class MultipleSearchInput<T> extends Vue {
   tagsId: T[] = []
   id = String(+new Date())
   selectFromList = false
+  alreadySetDefault = false
 
   get oneText () {
     return this.limit === 1
@@ -106,8 +108,12 @@ export default class MultipleSearchInput<T> extends Vue {
 
   @Watch('formatValue', { immediate: true })
   defaultTagByValue (newVal: T[], oldVal: T[]) {
+    //  被外面清空值,value和tagsId不对称时
+    if(newVal !== oldVal && newVal.length === 0 && this.tagsId.length !== newVal.length) {
+      this.resetByOutside()
+    }
     //  初始化的时候，本身有值，但没写进tags
-    if(newVal){
+    else if(!this.alreadySetDefault && newVal){
       const list = this.options.length > 0 ? this.options : this.list
       this.setDefaultTag(newVal, list)
     }
@@ -116,7 +122,7 @@ export default class MultipleSearchInput<T> extends Vue {
   @Watch('options', { immediate: true })
   defaultTagByOption (newVal: SelectOption<T>[], preVal: SelectOption<T>[]) {
     //  初始化的时候，本身有值，但没写进tags
-    if(newVal.length > 0) {
+    if(!this.alreadySetDefault && newVal.length > 0) {
       this.setDefaultTag(this.formatValue, newVal)
     }
   }
@@ -124,7 +130,7 @@ export default class MultipleSearchInput<T> extends Vue {
   @Watch('list', { immediate: true })
   defaultTagByList (newVal: SelectOption<T>[], preVal: SelectOption<T>[]) {
     //  初始化的时候，本身有值，但没写进tags
-    if(newVal.length > 0) {
+    if(!this.alreadySetDefault && newVal.length > 0) {
       this.setDefaultTag(this.formatValue, newVal)
     }
   }
@@ -168,6 +174,7 @@ export default class MultipleSearchInput<T> extends Vue {
         else return el
       })
       this.setDefaulOption()
+      this.alreadySetDefault = true
     }
     else if (value && value.length === 0) {
       this.tags = []
@@ -179,6 +186,12 @@ export default class MultipleSearchInput<T> extends Vue {
       this.tagsId = []
       this.newTag = ''
     }
+  }
+
+  resetByOutside() {
+      this.tags = []
+      this.tagsId = []
+      this.newTag = ''
   }
 
   get reachLimit () {
@@ -219,14 +232,14 @@ export default class MultipleSearchInput<T> extends Vue {
     // 检查不重复添加已经存在的tag
     if(this.tagsId.find(el => el === item.value))return
     this.options.length === 0 && !(this.curOptions.find(el => el.value === item.value)) && this.curOptions.push(item)
-    console.log(item.text)
     addTag(item.text)
-    console.log(this.tags)
-    this.tagsId.push(item.value)
-    this.isStringValue ? this.$emit('change', this.tagsId[0]) : this.$emit('change', this.tagsId)
-    console.log(this.newTag)
-    this.newTag = ''
-    this.$emit('fetch-data', '')
+    this.$nextTick(() => {
+      this.tagsId.push(item.value)
+      this.isStringValue ? this.$emit('change', this.tagsId[0]) : this.$emit('change', this.tagsId)
+      this.newTag = ''
+      this.$emit('fetch-data', '')
+    })
+   
   }
 
   fetchMoreData() {
