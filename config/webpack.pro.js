@@ -4,6 +4,7 @@ const path = require("path");
 module.exports = merge(common, {
   entry: "./src/lib/index.ts",
   mode: "production",
+  devtool: 'source-map',
   output: {
     library: "multipleSearchInput",
     globalObject: "this",

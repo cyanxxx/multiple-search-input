@@ -219,7 +219,9 @@ export default class MultipleSearchInput<T> extends Vue {
     // 检查不重复添加已经存在的tag
     if(this.tagsId.find(el => el === item.value))return
     this.options.length === 0 && !(this.curOptions.find(el => el.value === item.value)) && this.curOptions.push(item)
+    console.log(item.text)
     addTag(item.text)
+    console.log(this.tags)
     this.tagsId.push(item.value)
     this.isStringValue ? this.$emit('change', this.tagsId[0]) : this.$emit('change', this.tagsId)
     console.log(this.newTag)
