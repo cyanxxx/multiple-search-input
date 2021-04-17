@@ -1,12 +1,13 @@
 {
   "name": "multiple-search-input",
-  "version": "1.0.13",
+  "version": "1.0.15",
   "description": "It is based on vue-bootstrap-typeahead and supported multiple added tags.",
   "main": "dist/multipleSearchInput.min.js",
   "types": "index.d.ts",
   "files": [
     "dist",
-    "index.d.ts"
+    "index.d.ts",
+    "src/lib"
   ],
   "dependencies": {
     "bootstrap": "^4.6.0",
