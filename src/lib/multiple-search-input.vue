@@ -45,6 +45,7 @@
 import { Vue, Component, Prop, Model, Watch, Provide } from 'vue-property-decorator'
 import SearchInput from './search-input.vue'
 import { debounce } from "lodash";
+import { logger } from './utils/logger';
 export interface SelectOption<T> {text: string; value: T}
 @Component({
   name: 'MultipleSearchInput',
@@ -153,6 +154,7 @@ export default class MultipleSearchInput<T> extends Vue {
 
   setDefaultTag(value: T[], list: SelectOption<T>[]){
      if (value && value.length > 0 && this.tags.length === 0 && list.length > 0) {
+     
       const options = list
       const textShowArr: string[] = []
       value.forEach(el => {
@@ -164,6 +166,7 @@ export default class MultipleSearchInput<T> extends Vue {
         }
       })
       this.tags = textShowArr
+      logger.log(`default Tag ${this.tags}, import list ${list}.`)
       // 清洗数据
       this.tagsId = this.formatValue.filter(el => {
         if (typeof el === 'string') return !!el

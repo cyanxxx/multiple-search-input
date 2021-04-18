@@ -40,6 +40,8 @@
 <script lang='ts'>
 import { Vue, Component } from 'vue-property-decorator'
 import MultipleSearchInput, { SelectOption } from './lib/multiple-search-input.vue'
+import {enableLogs} from './lib/index'
+enableLogs(true)
 @Component({
   components: {
     MultipleSearchInput
