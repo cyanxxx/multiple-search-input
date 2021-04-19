@@ -92,35 +92,81 @@ describe("MultipleSearchInput.vue", () => {
     expect(wrapper.vm.tags).toEqual(['Apple'])
     expect(wrapper.vm.tagsId).toEqual(['a'])
   });
-  // it("depend the text input to find list", async () => {
-  //   const value = [];
-  //   const list = [{
-  //         text: "Apple",
-  //         value: "a",
-  //       },
-  //       {
-  //         text: "Bear",
-  //         value: "b",
-  //       },
-  //       {
-  //         text: "Cat",
-  //         value: "c",
-  //       }];
-  //   const options = [];
-  //   const wrapper = mount(MultipleSearchInput, {
-  //     propsData: { value, list },
-  //     localVue
-  //   });
-  //   // expect(wrapper.element).toMatchSnapshot()
-  //   const $input = wrapper.find('input')
-  //   await $input.setValue('Apple')
-  //   await $input.trigger('input')
-  //   await $input.trigger('blur')
-  //   // await wrapper.vm.$nextTick()
-  //   // expect(wrapper.element).toMatchSnapshot()
-  //   expect($input.element.value).toBe('Apple')
-  //   expect(wrapper.vm.tags).toEqual(['Apple'])
-  //   // expect(wrapper.vm.tagsId).toEqual(['a'])
-  //   // expect(wrapper.emitted()['fetch-data']).toBe('A')
-  // });
+  it("depend the text input to find list", async () => {
+    const value = [];
+    const list = [{
+          text: "Apple",
+          value: "a",
+        },
+        {
+          text: "Bear",
+          value: "b",
+        },
+        {
+          text: "Cat",
+          value: "c",
+        }];
+    const options = [];
+    const wrapper = mount(MultipleSearchInput, {
+      propsData: { value, list },
+      localVue
+    });
+    const $input = wrapper.find('input')
+    $input.element.value = 'Apple'
+    await $input.trigger('input')
+    await $input.trigger('blur')
+    expect(wrapper.vm.tags).toEqual(['Apple'])
+  });
+  it("can freeText", async () => {
+    const value = ['a'];
+    const list = [{
+          text: "Apple",
+          value: "a",
+        },
+        {
+          text: "Bear",
+          value: "b",
+        },
+        {
+          text: "Cat",
+          value: "c",
+        }];
+    const options = [];
+    const wrapper = mount(MultipleSearchInput, {
+      propsData: { value, list, canFreeText: true },
+      localVue
+    });
+    const $input = wrapper.find('input')
+    $input.element.value = 'Banner'
+    await $input.trigger('input')
+    await $input.trigger('blur')
+    expect(wrapper.vm.tags).toHaveLength(2)
+    expect(wrapper.vm.tags).toContain('Banner')
+  });
+  it("can freeText", async () => {
+    const value = ['a'];
+    const list = [{
+          text: "Apple",
+          value: "a",
+        },
+        {
+          text: "Bear",
+          value: "b",
+        },
+        {
+          text: "Cat",
+          value: "c",
+        }];
+    const options = [];
+    const wrapper = mount(MultipleSearchInput, {
+      propsData: { value, list, canFreeText: true },
+      localVue
+    });
+    const $input = wrapper.find('input')
+    $input.element.value = 'Banner'
+    await $input.trigger('input')
+    await $input.trigger('blur')
+    expect(wrapper.vm.tags).toHaveLength(2)
+    expect(wrapper.vm.tags).toContain('Banner')
+  });
 });
