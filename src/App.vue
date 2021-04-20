@@ -32,7 +32,7 @@
     </div>
     <div>
       <p>远程拿value默认值，翻页管理</p>
-       <MultipleSearchInput v-model="longVal" :list="longList" infinite @fetch-data="fetchOtherData" @fetch-more-data="fetchMoreData"></MultipleSearchInput>
+       <MultipleSearchInput v-model="longVal" :list="longList" infinite  :busy="busy" @fetch-data="fetchOtherData" @fetch-more-data="fetchMoreData"></MultipleSearchInput>
        <p>已选值： {{longVal}}, list: {{longList}}</p>
     </div>
   </div>

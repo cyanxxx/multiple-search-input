@@ -72,6 +72,8 @@ export default class MultipleSearchInput<T> extends Vue {
   @Prop({ type: Boolean }) canFreeText!: boolean;
   @Prop({ type: Boolean }) infinite!: boolean;
   @Prop({ type: Boolean }) busy!: boolean;
+  // @Prop({ type: Boolean }) showLoading!: boolean;
+  // @Prop({ type: Boolean }) loading!: boolean;
   @Prop({ type: Function }) handleValidate!: (val: T) => boolean;
   @Provide()
   asyncMatch = this.infinite
@@ -83,13 +85,17 @@ export default class MultipleSearchInput<T> extends Vue {
     return (typeof this.value === 'string'? this.value? [this.value] : [] : this.value) as T[]
   }
 
+  // get isLoading() {
+  //   return this.showLoading? this.busy || this.loading : false
+  // }
+
   curOptions: SelectOption<T>[] = []
   newTag = ''
   tags: string[] = []
   tagsId: T[] = []
   id = String(+new Date())
   selectFromList = false
-  alreadySetDefault = false
+  alreadySetDefault = true
 
   get oneText () {
     return this.limit === 1
@@ -114,7 +120,8 @@ export default class MultipleSearchInput<T> extends Vue {
       this.resetByOutside()
     }
     //  初始化的时候，本身有值，但没写进tags
-    else if(!this.alreadySetDefault && newVal){
+    else if(newVal && this.tagsId.length !== newVal.length){
+      this.alreadySetDefault = false
       const list = this.options.length > 0 ? this.options : this.list
       this.setDefaultTag(newVal, list)
     }
@@ -157,14 +164,17 @@ export default class MultipleSearchInput<T> extends Vue {
      
       const options = list
       const textShowArr: string[] = []
+      let hasInvaild = false
       value.forEach(el => {
         const find = options.find(listEl => listEl.value === el)
         if (find) {
           textShowArr.push(find.text)
         }else{
-          this.canFreeText && textShowArr.push(el as unknown as string)
+          this.canFreeText? textShowArr.push(el as unknown as string) : (hasInvaild = true)
         }
       })
+      if(hasInvaild)return
+
       this.tags = textShowArr
       logger.log(`default Tag ${this.tags}, import list ${list}.`)
       // 清洗数据

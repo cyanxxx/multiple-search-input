@@ -1,7 +1,7 @@
 const path = require("path");
 const { VueLoaderPlugin } = require("vue-loader");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
-const { CleanWebpackPlugin } = require("clean-webpack-plugin");
+
 
 module.exports = {
   module: {
@@ -44,6 +44,6 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: path.resolve("./", "public/index.html"),
     }),
-    new CleanWebpackPlugin(),
+    
   ],
 };

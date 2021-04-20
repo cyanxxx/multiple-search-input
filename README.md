@@ -20,7 +20,7 @@ Vue.use(multipleSearchInputPlugin);
 | :----   | :----   | :----  |
 | limit  | Number | 限制tag的个数 |
 | list  | {text: string; value: T}<T> | 下拉选择 |
-| options  | {text: string; value: T}<T> | 初始下拉（当是远程搜索没有初始下拉选择时需要提供，不然value找不到对应显示的text值） |
+| options  | {text: string; value: T}<T> | 初始下拉（当是远程搜索没有初始下拉选择时需要提供，不然value找不到对应显示的text值,当options和list同时有优先选options里面的值） |
 | label  | string | label |
 | fieldClass  | string | 设置整体div的class |
 | disabled  | boolean | disabled |

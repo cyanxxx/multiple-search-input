@@ -34,6 +34,7 @@
         v-infinite-scroll="loadMore"
         infinite-scroll-disabled="busy"
         infinite-scroll-distance="10"
+        infinite-scroll-immediate-check="false"
         :style="`max-height:${height}px`"
         class="vbt-autcomplete-list"
         :query="inputValue"

@@ -1,6 +1,6 @@
 const { merge } = require("webpack-merge");
 const common = require("./webpack.common.js");
-const TerserPlugin = require('terser-webpack-plugin');
+const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const path = require("path");
 module.exports = merge(common, {
   entry: "./src/lib/index.ts",
@@ -17,5 +17,8 @@ module.exports = merge(common, {
   externals: {
     "vue-property-decorator": "vue-property-decorator",
     "vue-class-component": "vue-class-component",
-  }
+  },
+  plugins: [
+    new CleanWebpackPlugin(),
+  ]
 });
