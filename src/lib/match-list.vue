@@ -1,6 +1,13 @@
 <template>
   <div class="list-group shadow">
     <match-item
+      v-if="multipleSearchInputProp.isLoading"
+      :isLoading="multipleSearchInputProp.isLoading"
+      html-text="loading..."
+    >
+    </match-item>
+    <match-item
+      v-else
       v-for="(item, id) in matchedItems"
       :key="id"
       :data="item.data"
@@ -28,6 +35,10 @@ import matchItem from "./match-item.vue";
   components: {
     matchItem,
   },
+  inject: {
+    multipleSearchInputProp: {default: () => ({isLoading: false})},
+    asyncMatch: {default: false}
+  }
 })
 export default class MatchList extends Vue {
   @Prop({ type: Array }) data!: { text: string; value: string }[];
@@ -36,7 +47,6 @@ export default class MatchList extends Vue {
   @Prop({ type: String, default: "" }) backgroundVariant!: string;
   @Prop({ type: Number, default: 10 }) maxMatches!: number;
   @Prop({ type: Number, default: 2 }) minMatchingChars!: number;
-  @Inject({ default: false }) asyncMatch!: boolean;
 
   get highlight() {
     return (text: string) => {
@@ -54,6 +64,7 @@ export default class MatchList extends Vue {
   }
 
   get matchedItems() {
+    //  @ts-ignore for the inject can not read property
     if (this.asyncMatch) {
       return this.data;
     }

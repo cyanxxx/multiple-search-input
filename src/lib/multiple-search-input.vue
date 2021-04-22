@@ -54,10 +54,16 @@ export interface SelectOption<T> {text: string; value: T}
   },
   watch: {
     newTag: debounce(function fetchList(this: any, newVal: string, preVal: string) {
-    if(!this.selectFromList && newVal !== preVal){
-      this.$emit('fetch-data', newVal)
+      if(!this.selectFromList && newVal !== preVal){
+        this.$emit('fetch-data', newVal)
+      }
+    }, 500)
+  },
+  provide() {
+    return {
+      multipleSearchInputProp: this.$props,
+      asyncMatch: this.infinite
     }
-  }, 500)
   }
 })
 export default class MultipleSearchInput<T> extends Vue {
@@ -72,11 +78,8 @@ export default class MultipleSearchInput<T> extends Vue {
   @Prop({ type: Boolean }) canFreeText!: boolean;
   @Prop({ type: Boolean }) infinite!: boolean;
   @Prop({ type: Boolean }) busy!: boolean;
-  // @Prop({ type: Boolean }) showLoading!: boolean;
-  // @Prop({ type: Boolean }) loading!: boolean;
+  @Prop({ type: Boolean }) isLoading!: boolean;
   @Prop({ type: Function }) handleValidate!: (val: T) => boolean;
-  @Provide()
-  asyncMatch = this.infinite
 
   //  只有一个值的时候
   @Model('change', { type: [Array,String] }) readonly value!: T[] | T
@@ -84,10 +87,6 @@ export default class MultipleSearchInput<T> extends Vue {
   get formatValue() {
     return (typeof this.value === 'string'? this.value? [this.value] : [] : this.value) as T[]
   }
-
-  // get isLoading() {
-  //   return this.showLoading? this.busy || this.loading : false
-  // }
 
   curOptions: SelectOption<T>[] = []
   newTag = ''
@@ -160,7 +159,7 @@ export default class MultipleSearchInput<T> extends Vue {
   }
 
   setDefaultTag(value: T[], list: SelectOption<T>[]){
-     if (value && value.length > 0 && this.tags.length === 0 && list.length > 0) {
+     if (value && value.length > 0 && this.tags.length === 0 && (list.length > 0 || this.canFreeText)) {
      
       const options = list
       const textShowArr: string[] = []

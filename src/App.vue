@@ -2,7 +2,7 @@
   <div id="app" style="padding: 10px">
     <div>
       <p>远程搜索</p>
-      <MultipleSearchInput v-model="firstVal" :list="asyncList" @fetch-data="fetchData" @get-option="getCurOptiton"></MultipleSearchInput>
+      <MultipleSearchInput v-model="firstVal" :list="asyncList" :isLoading="isLoading" @fetch-data="fetchData" @get-option="getCurOptiton"></MultipleSearchInput>
       <p>已选值： {{firstVal}}, list: {{asyncList}}</p>
     </div>
     <div>
@@ -50,6 +50,7 @@ enableLogs(true)
 export default class App extends Vue {
   firstVal = []
   curOptiton: SelectOption<string>[] = []
+  isLoading = false
   list = [
     {
       text:'Apple' , value: 'a'
@@ -106,10 +107,13 @@ export default class App extends Vue {
   }
 
   fetchData(val: string) {
+    console.log('fetach', val)
+    this.isLoading = true
     setTimeout(() => {
       console.log(val)
       this.asyncList = this.list.filter(el => el.text.includes(val))
-    }, 1000)
+       this.isLoading = false
+    }, 5000)
   }
 
   fetchOtherData(val: string) {

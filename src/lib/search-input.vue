@@ -29,7 +29,7 @@
     </div>
       <MatchList
         v-if="asyncMatch"
-        v-show="isFocused && data.length > 0" 
+        v-show="isFocused && (data.length > 0 || multipleSearchInputProp.isLoading)" 
         ref="list" 
         v-infinite-scroll="loadMore"
         infinite-scroll-disabled="busy"
@@ -56,7 +56,7 @@
       </MatchList>
       <MatchList
         v-else
-        v-show="isFocused && data.length > 0"
+        v-show="isFocused && (data.length > 0 || multipleSearchInputProp.isLoading) "
         ref="list"
         :style="`max-height:${height}px`"
         class="vbt-autcomplete-list"
@@ -112,13 +112,16 @@ import MatchList from './match-list.vue'
   },
   components: {
     MatchList
+  },
+  inject: {
+    multipleSearchInputProp: {default: () => ({isLoading: false})},
+    asyncMatch: {default: false}
   }
 })
 export default class SearchInput extends mixins(VueBootstrapTypeahead) {
   @Prop({ type: String }) tagsId!: string
   @Prop({ type: Boolean }) canFreeText!: boolean;
   @Prop({ type: Boolean }) busy!: boolean;
-  @Inject({default: false}) asyncMatch!: boolean;
   
   maxHeight = 250
   height = 250
