@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div id="app" style="padding: 10px">
     <div>
       <p>远程搜索</p>
       <MultipleSearchInput v-model="firstVal" :list="asyncList" @fetch-data="fetchData" @get-option="getCurOptiton"></MultipleSearchInput>
@@ -8,7 +8,7 @@
     <div>
       <p>远程搜索，原本已选值</p>
       <MultipleSearchInput v-model="alreadyVal" :list="asyncList" :options="optitonList" @fetch-data="fetchData"></MultipleSearchInput>
-      <p>已选值： {{alreadyVal}}, list: {{asyncList}}</p>
+      <p>已选值： {{alreadyVal}}, list: {{asyncList}}, option: {{optitonList}} </p>
     </div>
     <div>
       <p>远程搜索，可以自由写值，不一定从下拉选择</p>
@@ -88,6 +88,7 @@ export default class App extends Vue {
   created() {
   setTimeout(() => {
      this.fifthVal = ['a']
+     this.forthVal = ['a']
     }, 1000)
     setTimeout(() => {
       this.asyncDefaultValue = [...this.list]
