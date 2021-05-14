@@ -1,6 +1,6 @@
 {
   "name": "multiple-search-input",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "It is based on vue-bootstrap-typeahead and supported multiple added tags.",
   "main": "dist/multipleSearchInput.min.js",
   "types": "index.d.ts",
@@ -62,6 +62,7 @@
   "scripts": {
     "test:unit": "jest",
     "start": "cross-env NODE_ENV=development webpack-dev-server --config ./config/webpack.dev.js --watch",
+    "dev": "cross-env NODE_ENV=development webpack --config ./config/webpack.dev-component.js",
     "start:demo": "cross-env NODE_ENV=demo webpack --config ./config/webpack.demo.js",
     "build": "cross-env NODE_ENV=production webpack --config ./config/webpack.pro.js",
     "eslint": "eslint  --fix \"src/**/*.{js,vue}\""

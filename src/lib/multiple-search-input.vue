@@ -19,8 +19,8 @@
         <template
           v-slot="{ tags, addTag, disabled, removeTag }"
         >
-          <ul v-if="tags.length > 0" class="b-form-tags-list list-inline d-inline-block mb-0" :style="`${oneText? 'width: 100%' : ''}`">
-            <li v-for="tag in tags" :key="tag" class="list-inline-item" :style="`${oneText? 'width: 100%' : ''}`">
+          <ul v-if="tags.length > 0" class="b-form-tags-list list-inline d-inline-block mb-0" style="max-width: 100%">
+            <li v-for="tag in tags" :key="tag" class="list-inline-item" style="max-width: 100%">
               <b-form-tag
                 :title="tag"
                 :disabled="disabled"
