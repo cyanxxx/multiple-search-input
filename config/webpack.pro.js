@@ -7,7 +7,7 @@ module.exports = merge(common, {
   mode: "production",
   devtool: 'source-map',
   output: {
-    library: "multipleSearchInput",
+    library: "multiple-search-input",
     globalObject: "this",
     libraryTarget: "umd",
     filename: "multipleSearchInput.min.js",
@@ -17,6 +17,7 @@ module.exports = merge(common, {
   externals: {
     "vue-property-decorator": "vue-property-decorator",
     "vue-class-component": "vue-class-component",
+    "vue": "vue"
   },
   plugins: [
     new CleanWebpackPlugin(),

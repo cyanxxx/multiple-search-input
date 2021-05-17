@@ -37,3 +37,6 @@ Vue.use(multipleSearchInputPlugin);
 | fetch-more-data | (val: string) => void; | 触发滚动到底部的时候触发 | 
 | get-option | (val: {text: string; value: T}<T>[]) => void; | 获取当前已被选中的tag option(对于得不到初始option,在页面返回的时候可以在option中传入) |
 | change[v-model] | (val: string[]) => void; |  |
+
+### 如何链接到别的包本地调试
+- 运行`npm run dev`,将`package.json`中的main改为`dist/multipleSearchInput.js`, 并运行`npm link`将包链接到本地全局，再在需要调试的项目运行`npm link multiple-search-input`。需要调试的项目还需要`npm install source-map-loader`配置webpack.config
