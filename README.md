@@ -1,6 +1,10 @@
 ## Tag-Input
+![示例](https://github.com/cyanxxx/multiple-search-input/blob/v1.0/examples.png)
 ### 基于vue-bootstrap-typeahead二次开发组件，支持输入多个tag和tag的远程搜索组件。
-### 需要vue-property-decorator, vue-class-component, bootstrap的b-form-tags全局注册
+
+### 特别注意
+- 需要vue-property-decorator, vue-class-component, bootstrap的b-form-tags全局注册
+
 
 ### usage
 #### 组件方式
