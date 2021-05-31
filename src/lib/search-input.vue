@@ -105,6 +105,7 @@ import VueBootstrapTypeahead from 'vue-bootstrap-typeahead'
 import { mixins } from 'vue-class-component'
 import infiniteScroll from 'vue-infinite-scroll'
 import MatchList from './match-list.vue'
+import { logger } from './utils/logger'
 @Component({
   name: 'SearchInput',
   directives: {
@@ -132,6 +133,18 @@ export default class SearchInput extends mixins(VueBootstrapTypeahead) {
   setHeight (newVal: boolean) {
     if (newVal) {
       this.calcuHeight()
+    }
+  }
+
+  @Watch('inputValue')
+  setScrollTop (newVal: string, oldValue: string) {
+    if (newVal !== oldValue) {
+      try{
+        ;(this.$refs.list as Vue).$el.scrollTop = 0
+      }catch(e) {
+        logger.error('change srcollTop has failed.', e)
+      }
+      
     }
   }
 
