@@ -79,6 +79,7 @@ export default class MultipleSearchInput<T> extends Vue {
   @Prop({ type: Boolean }) infinite!: boolean;
   @Prop({ type: Boolean }) busy!: boolean;
   @Prop({ type: Boolean }) isLoading!: boolean;
+  @Prop({ type: Boolean }) matchValue!: boolean;
   @Prop({ type: Function }) handleValidate!: (val: T) => boolean;
 
   //  只有一个值的时候

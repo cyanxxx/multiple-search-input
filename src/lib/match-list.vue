@@ -36,12 +36,12 @@ import matchItem from "./match-item.vue";
     matchItem,
   },
   inject: {
-    multipleSearchInputProp: {default: () => ({isLoading: false})},
+    multipleSearchInputProp: {default: () => ({isLoading: false, matchValue: false})},
     asyncMatch: {default: false}
   }
 })
 export default class MatchList extends Vue {
-  @Prop({ type: Array }) data!: { text: string; value: string }[];
+  @Prop({ type: Array }) data!: { id: number; text: string; data:{text: string; value: string }}[];
   @Prop({ type: String, default: "" }) query!: string;
   @Prop({ type: String, default: "" }) textVariant!: string;
   @Prop({ type: String, default: "" }) backgroundVariant!: string;
@@ -73,7 +73,7 @@ export default class MatchList extends Vue {
     }
     const re = new RegExp(this.escapedQuery, "gi");
     // Filter, sort, and concat
-    return this.data
+    const filterData = this.data
       .filter((i) => i.text.match(re) !== null)
       .sort((a, b) => {
         const aIndex = a.text.indexOf(a.text.match(re)![0]);
@@ -87,6 +87,26 @@ export default class MatchList extends Vue {
         return 0;
       })
       .slice(0, this.maxMatches);
+
+    //@ts-ignore
+    if(filterData.length === 0 && this.multipleSearchInputProp.matchValue) {
+      return this.data
+        .filter((i) => i.data.value.match(re) !== null)
+        .sort((a, b) => {
+          const aIndex = a.data.value.indexOf(a.data.value.match(re)![0]);
+          const bIndex = b.data.value.indexOf(b.data.value.match(re)![0]);
+          if (aIndex < bIndex) {
+            return -1;
+          }
+          if (aIndex > bIndex) {
+            return 1;
+          }
+          return 0;
+        })
+        .slice(0, this.maxMatches);
+    }else{
+      return filterData
+    }
   }
 
   handleHit(item: string, evt: any) {

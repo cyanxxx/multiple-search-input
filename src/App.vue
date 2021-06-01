@@ -6,6 +6,11 @@
       <p>已选值： {{firstVal}}, list: {{asyncList}}</p>
     </div>
     <div>
+      <p>本地搜索， 拿value值</p>
+      <MultipleSearchInput v-model="firstVal" :list="uiList" matchValue></MultipleSearchInput>
+      <p>已选值： {{uitVal}}, list: {{uiList}}</p>
+    </div>
+    <div>
       <p>远程搜索，原本已选值</p>
       <MultipleSearchInput v-model="alreadyVal" :list="asyncList" :options="optitonList" @fetch-data="fetchData"></MultipleSearchInput>
       <p>已选值： {{alreadyVal}}, list: {{asyncList}}, option: {{optitonList}} </p>
@@ -49,6 +54,7 @@ enableLogs(true)
 })
 export default class App extends Vue {
   firstVal = []
+  uitVal = []
   curOptiton: SelectOption<string>[] = []
   isLoading = false
   list = [
@@ -60,6 +66,17 @@ export default class App extends Vue {
     },
     {
       text:'Cat' , value: 'c'
+    }
+  ]
+  uiList = [
+    {
+      text:'Apple' , value: '1002'
+    },
+    {
+      text:'Bear' , value: '1003'
+    },
+    {
+      text:'Cat' , value: '1004'
     }
   ]
 

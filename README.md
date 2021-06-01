@@ -31,6 +31,7 @@ Vue.use(multipleSearchInputPlugin);
 | canFreeText  | boolean | 不检查是否在下拉内，可以直接新建tag |
 | busy| boolean | 使用无限滚动时翻页设置成true,load数据后改成false|
 | infinite| boolean | 是否采用无限滚动 |
+| matchValue| boolean | 是否匹配data的value，默认false，只有不与当前text匹配时,才会去搜索有没有value匹配 |
 | handleValidate  | (val: T) => boolean | 控制能否加入tag内
 | value [v-model] | T[] | tag的value
 
