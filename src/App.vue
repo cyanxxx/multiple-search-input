@@ -4,6 +4,7 @@
       <p>远程搜索</p>
       <MultipleSearchInput v-model="firstVal" :list="asyncList" :isLoading="isLoading" @fetch-data="fetchData" @get-option="getCurOptiton"></MultipleSearchInput>
       <p>已选值： {{firstVal}}, list: {{asyncList}}</p>
+     
     </div>
     <div>
       <p>远程搜索，原本已选值</p>
@@ -19,6 +20,7 @@
       <p>远程拿value默认值，本地搜索</p>
        <MultipleSearchInput v-model="forthVal" :list="asyncDefaultValue"></MultipleSearchInput>
       <p>已选值： {{forthVal}}, list: {{asyncDefaultValue}}</p>
+       <button @click="handleAdd">外部加值</button>
     </div>
     <div>
       <p>处理前缀后缀空白值</p>
@@ -155,7 +157,9 @@ export default class App extends Vue {
       }, 1000)
     }
   }
-
+  handleAdd(){
+    this.forthVal.push('c')
+  }
 }
 </script>
 

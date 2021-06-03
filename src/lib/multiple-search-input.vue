@@ -109,7 +109,13 @@ export default class MultipleSearchInput<T> extends Vue {
   }
 
   get dataOptions() {
-    return [...this.options, ...this.curOptions]
+    let map = {}
+    return [...this.options, ...this.curOptions, ...this.list].reduce((pre, cur) => {
+      if(!(cur.value in map)){
+        pre.push(cur)
+      }
+      return pre
+    }, [])
   }
 
   @Watch('formatValue', { immediate: true })
@@ -119,7 +125,7 @@ export default class MultipleSearchInput<T> extends Vue {
       this.resetByOutside()
     }
     //  初始化的时候，本身有值，但没写进tags
-    else if(newVal && this.tagsId.length !== newVal.length){
+    else if(newVal && this.tagsId !== newVal){
       this.alreadySetDefault = false
       const list = this.options.length > 0 ? this.options : this.list
       this.setDefaultTag(newVal, list)
@@ -159,7 +165,7 @@ export default class MultipleSearchInput<T> extends Vue {
   }
 
   setDefaultTag(value: T[], list: SelectOption<T>[]){
-     if (value && value.length > 0 && this.tags.length === 0 && (list.length > 0 || this.canFreeText)) {
+     if (value && value.length > 0 && this.tags.length !== value.length && (list.length > 0 || this.canFreeText)) {
      
       const options = list
       const textShowArr: string[] = []
