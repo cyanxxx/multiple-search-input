@@ -85,6 +85,7 @@ export default class MultipleSearchInput<T> extends Vue {
   @Model('change', { type: [Array,String] }) readonly value!: T[] | T
 
   get formatValue() {
+    // console.log(this.tagsId)
     return (typeof this.value === 'string'? this.value? [this.value] : [] : this.value) as T[]
   }
 
@@ -125,10 +126,9 @@ export default class MultipleSearchInput<T> extends Vue {
       this.resetByOutside()
     }
     //  初始化的时候，本身有值，但没写进tags
-    else if(newVal && this.tagsId !== newVal){
+    else if(newVal && !this.checkArrisSame(this.tagsId, newVal)){
       this.alreadySetDefault = false
-      const list = this.options.length > 0 ? this.options : this.list
-      this.setDefaultTag(newVal, list)
+      this.setDefaultTag(newVal, this.dataOptions)
     }
   }
 
@@ -153,6 +153,10 @@ export default class MultipleSearchInput<T> extends Vue {
     this.$emit('get-option', val)
   }
 
+  checkArrisSame(arr1: any[], arr2: any[]) {
+    return arr1.length === arr2.length && arr1.every((el,i) => el === arr2[i])
+  }
+
   setDefaulOption() {
     if(this.options.length === 0 && this.list.length > 0 && this.curOptions.length === 0) {
       const curValue = this.tagsId
@@ -165,8 +169,7 @@ export default class MultipleSearchInput<T> extends Vue {
   }
 
   setDefaultTag(value: T[], list: SelectOption<T>[]){
-     if (value && value.length > 0 && this.tags.length !== value.length && (list.length > 0 || this.canFreeText)) {
-     
+     if (value && value.length > 0 && (list.length > 0 || this.canFreeText)) {
       const options = list
       const textShowArr: string[] = []
       let hasInvaild = false
@@ -182,15 +185,22 @@ export default class MultipleSearchInput<T> extends Vue {
 
       this.tags = textShowArr
       logger.log(`default Tag ${this.tags}, import list ${list}.`)
+
       // 清洗数据
-      this.tagsId = this.formatValue.filter(el => {
+      this.tagsId = value.filter(el => {
         if (typeof el === 'string') return !!el
-        else if (typeof el === 'undefined') return false
         return true
       }).map(el => {
         if (typeof el === 'string') return el.trim() as unknown as T
         else return el
       })
+
+      if(!this.checkArrisSame(this.tagsId, value)) {
+        this.isStringValue ? this.$emit('change', this.tagsId[0]) : this.$emit('change', [...this.tagsId])
+        logger.log('flush dirty data.')
+        return
+      }
+      
       this.setDefaulOption()
       this.alreadySetDefault = true
     }
@@ -229,7 +239,7 @@ export default class MultipleSearchInput<T> extends Vue {
     //  不存在list的时候直接删除
     const deleteTagId = obj ? obj.value : tag
     deleteTagId && (this.tagsId = this.tagsId.filter(el => el !== deleteTagId))
-    this.isStringValue ? this.$emit('change', '') : this.$emit('change', this.tagsId)
+    this.isStringValue ? this.$emit('change', '') : this.$emit('change', [...this.tagsId])
     this.newTag = ''
   }
 
@@ -253,7 +263,7 @@ export default class MultipleSearchInput<T> extends Vue {
     addTag(item.text)
     this.$nextTick(() => {
       this.tagsId.push(item.value)
-      this.isStringValue ? this.$emit('change', this.tagsId[0]) : this.$emit('change', this.tagsId)
+      this.isStringValue ? this.$emit('change', this.tagsId[0]) : this.$emit('change', [...this.tagsId])
       this.newTag = ''
       this.$emit('fetch-data', '')
     })

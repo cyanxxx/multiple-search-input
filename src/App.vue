@@ -1,41 +1,51 @@
 <template>
   <div id="app" style="padding: 10px">
     <div>
-      <p>远程搜索</p>
+      <p>远程搜索, 取决于输入的字符，去服务器拿匹配数据</p>
       <MultipleSearchInput v-model="firstVal" :list="asyncList" :isLoading="isLoading" @fetch-data="fetchData" @get-option="getCurOptiton"></MultipleSearchInput>
       <p>已选值： {{firstVal}}, list: {{asyncList}}</p>
      
     </div>
     <div>
-      <p>远程搜索，原本已选值</p>
+      <p>远程搜索，原本已选值，有初定数据和服务器拿取的数据</p>
       <MultipleSearchInput v-model="alreadyVal" :list="asyncList" :options="optitonList" @fetch-data="fetchData"></MultipleSearchInput>
       <p>已选值： {{alreadyVal}}, list: {{asyncList}}, option: {{optitonList}} </p>
     </div>
     <div>
-      <p>远程搜索，可以自由写值，不一定从下拉选择</p>
+      <p>远程搜索，可以自由写值，不一定从下拉选择, 没有初定数据</p>
       <MultipleSearchInput v-model="thirdVal" :list="asyncList" canFreeText @fetch-data="fetchData"></MultipleSearchInput>
       <p>已选值： {{thirdVal}}, list: {{asyncList}}</p>
     </div>
     <div>
-      <p>远程拿value默认值，本地搜索</p>
+      <p>远程拿value，下拉默认值（此时list，option功能一致），本地搜索</p>
        <MultipleSearchInput v-model="forthVal" :list="asyncDefaultValue"></MultipleSearchInput>
       <p>已选值： {{forthVal}}, list: {{asyncDefaultValue}}</p>
        <button @click="handleAdd">外部加值</button>
     </div>
     <div>
-      <p>处理前缀后缀空白值</p>
+      <p>处理前缀后缀空白值， 会重新修改value的值</p>
        <MultipleSearchInput v-model="withTrimVal" :list="notTrimList" canFreeText></MultipleSearchInput>
       <p>已选值： {{withTrimVal}}, list: {{notTrimList}}</p>
     </div>
     <div>
-      <p>远程拿value默认值，远程后拿到值本地搜索</p>
+      <p>value默认值，远程拿list到值本地搜索</p>
        <MultipleSearchInput v-model="fifthVal" :list="asyncDefaultValue"></MultipleSearchInput>
        <p>已选值： {{fifthVal}}, list: {{asyncDefaultValue}}</p>
     </div>
     <div>
-      <p>远程拿value默认值，翻页管理</p>
+      <p>远程拿value默认值，翻页管理, 使用最好加多一层抽象，来集中管理pageNum，busy, loadedAll, total</p>
        <MultipleSearchInput v-model="longVal" :list="longList" infinite  :busy="busy" @fetch-data="fetchOtherData" @fetch-more-data="fetchMoreData"></MultipleSearchInput>
        <p>已选值： {{longVal}}, list: {{longList}}</p>
+       <code>
+         listConfig = {
+            page: 1,
+            total: 0,
+            perPage: 10,
+            busy: false,
+            loadedAll: false
+          }
+          详细参照lib/multiple-async-input
+       </code>
     </div>
   </div>
 </template>
@@ -81,7 +91,7 @@ export default class App extends Vue {
   asyncDefaultValue: SelectOption<string>[] = []
   thirdVal: string[] = []
   forthVal: string[] = []
-  fifthVal: string[] = []
+  fifthVal: string[] = ['a']
   longVal: string[] = []
   page = 1
   total = 200
@@ -90,7 +100,6 @@ export default class App extends Vue {
 
   created() {
   setTimeout(() => {
-     this.fifthVal = ['a']
      this.forthVal = ['a']
     }, 1000)
     setTimeout(() => {
@@ -109,7 +118,7 @@ export default class App extends Vue {
   }
 
   fetchData(val: string) {
-    console.log('fetach', val)
+    console.log('fetch', val)
     this.isLoading = true
     setTimeout(() => {
       console.log(val)
