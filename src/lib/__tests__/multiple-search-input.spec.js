@@ -1,13 +1,13 @@
 import "jest";
 import { shallowMount, createLocalVue, mount } from "@vue/test-utils";
-// 直接读取打完包后的组件
-import { MultipleSearchInput } from "../../../dist/multipleSearchInput.min.js";
+import MultipleSearchInput, { SelectOption } from '../multiple-search-input.vue'
 import { FormTagsPlugin } from 'bootstrap-vue'
+import Demo from '../../App.vue'
 
 describe("MultipleSearchInput.vue", () => {
   const localVue  = createLocalVue()
   localVue.use(FormTagsPlugin)
-  it("MultipleSearchInput have the default value.", () => {
+  it("render with local value and local list.", () => {
     const value = ["a"];
     const list = [
       {
@@ -30,32 +30,8 @@ describe("MultipleSearchInput.vue", () => {
     expect(wrapper.vm.tags).toEqual(['Apple'])
     expect(wrapper.vm.tagsId).toEqual(['a'])
   });
-  it("MultipleSearchInput have the default value and list is async.", () => {
-    const value = ["a"];
-    const list = [];
-    const options = [
-      {
-        text: "Apple",
-        value: "a",
-      },
-      {
-        text: "Bear",
-        value: "b",
-      },
-      {
-        text: "Cat",
-        value: "c",
-      },
-    ];
-    const wrapper = shallowMount(MultipleSearchInput, {
-      propsData: { value, options, list },
-      localVue
-    });
-    expect(wrapper.vm.tags).toEqual(['Apple'])
-    expect(wrapper.vm.tagsId).toEqual(['a'])
-  });
-  it("MultipleSearchInput have the async default value and options.", async () => {
-    const value = ["a"];
+  it("render async value and options.", async () => {
+    const value = [];
     const list = [];
     const options = [];
     const wrapper = shallowMount(MultipleSearchInput, {
@@ -92,7 +68,7 @@ describe("MultipleSearchInput.vue", () => {
     expect(wrapper.vm.tags).toEqual(['Apple'])
     expect(wrapper.vm.tagsId).toEqual(['a'])
   });
-  it("get tag value first and then get the list", async () => {
+  it("render with async value first and then get the list", async () => {
     const value = ['a'];
     const list = [];
     const options = [];
@@ -125,7 +101,7 @@ describe("MultipleSearchInput.vue", () => {
     expect(wrapper.vm.tags).toEqual(['Apple'])
     expect(wrapper.vm.tagsId).toEqual(['a'])
   });
-  it("get tag value first and then get the list, but can freeText", async () => {
+  it("render with async value first and then get the list, but can freeText", async () => {
     const value = ['a', 'banner'];
     const list = [];
     const options = [];
@@ -158,7 +134,7 @@ describe("MultipleSearchInput.vue", () => {
     expect(wrapper.vm.tags).toEqual(['Apple','banner'])
     expect(wrapper.vm.tagsId).toEqual(['a', 'banner'])
   });
-  it("get tag list first and then get the value", async () => {
+  it("render with list first and then get async value", async () => {
     const value = [];
     const list = [];
     const options = [
@@ -191,7 +167,7 @@ describe("MultipleSearchInput.vue", () => {
     expect(wrapper.vm.tags).toEqual(['Apple'])
     expect(wrapper.vm.tagsId).toEqual(['a'])
   });
-  it("depend the text input to find list", async () => {
+  it("render tag with text input", async () => {
     const value = [];
     const list = [{
           text: "Apple",
@@ -205,7 +181,6 @@ describe("MultipleSearchInput.vue", () => {
           text: "Cat",
           value: "c",
         }];
-    const options = [];
     const wrapper = mount(MultipleSearchInput, {
       propsData: { value, list },
       localVue
@@ -217,7 +192,7 @@ describe("MultipleSearchInput.vue", () => {
     expect(wrapper.vm.tags).toEqual(['Apple'])
   });
 
-  it("can freeText", async () => {
+  it("input free text and props has freeText", async () => {
     const value = ['a'];
     const list = [{
           text: "Apple",
@@ -231,7 +206,6 @@ describe("MultipleSearchInput.vue", () => {
           text: "Cat",
           value: "c",
         }];
-    const options = [];
     const wrapper = mount(MultipleSearchInput, {
       propsData: { value, list, canFreeText: true },
       localVue
@@ -243,5 +217,47 @@ describe("MultipleSearchInput.vue", () => {
     expect(wrapper.vm.tags).toHaveLength(2)
     expect(wrapper.vm.tags).toContain('Banner')
   });
- 
+
+  it("render add by outside value", async () => {
+    const value = ['a'];
+    const list = [{
+          text: "Apple",
+          value: "a",
+        },
+        {
+          text: "Bear",
+          value: "b",
+        },
+        {
+          text: "Cat",
+          value: "c",
+        }];
+    const wrapper = mount(MultipleSearchInput, {
+      propsData: { value, list, canFreeText: true },
+      localVue
+    });
+    expect(wrapper.vm.tags).toEqual(['Apple'])
+    expect(wrapper.vm.tagsId).toEqual(['a'])
+    expect(wrapper.props().value).toEqual(['a'])
+    wrapper.setProps({
+      value: ['a', 'b']
+    })
+    await wrapper.vm.$nextTick()
+    expect(wrapper.vm.tags).toEqual(['Apple', 'Bear'])
+    expect(wrapper.vm.tagsId).toEqual(['a', 'b'])
+    expect(wrapper.props().value).toEqual(['a', 'b'])
+  });
 });
+
+describe('Demo', () => {
+  const wrapper = shallowMount(Demo);
+  it('render as usual', async () => {
+    jest.useFakeTimers();
+    setTimeout(() => {
+      // 
+    }, 2000)
+    jest.runTimersToTime(2000)
+    await wrapper.vm.$nextTick()
+    expect(wrapper.element).toMatchSnapshot()
+  })
+})

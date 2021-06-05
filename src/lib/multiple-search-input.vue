@@ -169,7 +169,7 @@ export default class MultipleSearchInput<T> extends Vue {
   }
 
   setDefaultTag(value: T[], list: SelectOption<T>[]){
-     if (value && value.length > 0 && (list.length > 0 || this.canFreeText)) {
+     if (value && value.length > 0 && list.length > 0) {
       const options = list
       const textShowArr: string[] = []
       let hasInvaild = false

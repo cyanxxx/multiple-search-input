@@ -4,3 +4,4 @@ config/*
 tsconfig.json
 node_modules
 **/multiple-search-input
+script/*.js

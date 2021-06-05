@@ -24,8 +24,8 @@
     </div>
     <div>
       <p>处理前缀后缀空白值， 会重新修改value的值</p>
-       <MultipleSearchInput v-model="withTrimVal" :list="notTrimList" canFreeText></MultipleSearchInput>
-      <p>已选值： {{withTrimVal}}, list: {{notTrimList}}</p>
+       <MultipleSearchInput v-model="withTrimVal" :list="withTrimList" canFreeText></MultipleSearchInput>
+      <p>已选值： {{withTrimVal}}, list: {{withTrimList}}</p>
     </div>
     <div>
       <p>value默认值，远程拿list到值本地搜索</p>
@@ -86,7 +86,7 @@ export default class App extends Vue {
   ]
   longList: SelectOption<string>[] = []
   withTrimVal = [' a ']
-  notTrimList = []
+  withTrimList = [' a ']
   asyncList: SelectOption<string>[] = []
   asyncDefaultValue: SelectOption<string>[] = []
   thirdVal: string[] = []
