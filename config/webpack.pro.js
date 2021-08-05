@@ -14,6 +14,9 @@ module.exports = merge(common, {
     chunkFilename: "js/multipleSearchInput.[contenthash:8].js",
     path: path.resolve(__dirname, "..", "dist"),
   },
+  optimization: {
+    minimize: false
+  },
   externals: {
     "vue-property-decorator": "vue-property-decorator",
     "vue-class-component": "vue-class-component",

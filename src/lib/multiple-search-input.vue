@@ -96,6 +96,8 @@ export default class MultipleSearchInput<T> extends Vue {
   id = String(+new Date())
   selectFromList = false
   alreadySetDefault = true
+  dataOptions: SelectOption<T>[] = []
+  dataOptionsMap: {[x: string]: string} = {}
 
   get oneText () {
     return this.limit === 1
@@ -109,14 +111,15 @@ export default class MultipleSearchInput<T> extends Vue {
     return this.disabled
   }
 
-  get dataOptions() {
-    let map = {}
-    return [...this.options, ...this.curOptions, ...this.list].reduce((pre, cur) => {
-      if(!(cur.value in map)){
+  setDataOptions(newArr: any[]) {
+    const arr = newArr.reduce((pre, cur) => {
+      if(!(cur.value in this.dataOptionsMap)){
         pre.push(cur)
+        this.dataOptionsMap[cur.value] = cur.text
       }
       return pre
     }, [])
+    this.dataOptions.push(...arr)
   }
 
   @Watch('formatValue', { immediate: true })
@@ -128,6 +131,8 @@ export default class MultipleSearchInput<T> extends Vue {
     //  初始化的时候，本身有值，但没写进tags
     else if(newVal && !this.checkArrisSame(this.tagsId, newVal)){
       this.alreadySetDefault = false
+      this.setDataOptions(this.options)
+      this.setDataOptions(this.list)
       this.setDefaultTag(newVal, this.dataOptions)
     }
   }
@@ -136,14 +141,17 @@ export default class MultipleSearchInput<T> extends Vue {
   defaultTagByOption (newVal: SelectOption<T>[], preVal: SelectOption<T>[]) {
     //  初始化的时候，本身有值，但没写进tags
     if(!this.alreadySetDefault && newVal.length > 0) {
+      this.setDataOptions(newVal)
       this.setDefaultTag(this.formatValue, newVal)
     }
+    
   }
 
   @Watch('list', { immediate: true })
   defaultTagByList (newVal: SelectOption<T>[], preVal: SelectOption<T>[]) {
     //  初始化的时候，本身有值，但没写进tags
     if(!this.alreadySetDefault && newVal.length > 0) {
+      this.setDataOptions(newVal)
       this.setDefaultTag(this.formatValue, newVal)
     }
   }
@@ -157,7 +165,7 @@ export default class MultipleSearchInput<T> extends Vue {
     return arr1.length === arr2.length && arr1.every((el,i) => el === arr2[i])
   }
 
-  setDefaulOption() {
+  setDefaultOption() {
     if(this.options.length === 0 && this.list.length > 0 && this.curOptions.length === 0) {
       const curValue = this.tagsId
       this.list.forEach(el => {
@@ -165,6 +173,7 @@ export default class MultipleSearchInput<T> extends Vue {
           this.curOptions.push(el)
         }
       })
+      this.setDataOptions(this.curOptions)
     }
   }
 
@@ -198,22 +207,21 @@ export default class MultipleSearchInput<T> extends Vue {
       if(!this.checkArrisSame(this.tagsId, value)) {
         this.isStringValue ? this.$emit('change', this.tagsId[0]) : this.$emit('change', [...this.tagsId])
         logger.log('flush dirty data.')
-        return
       }
       
-      this.setDefaulOption()
+      this.setDefaultOption()
       this.alreadySetDefault = true
     }
-    else if (value && value.length === 0) {
-      this.tags = []
-      this.tagsId = []
-    }
-    //  针对只有一个值的，如果value被外面置空
-    else if(value && value.length > 0 && !value[0]){
-      this.tags = []
-      this.tagsId = []
-      this.newTag = ''
-    }
+    // else if (value && value.length === 0) {
+    //   this.tags = []
+    //   this.tagsId = []
+    // }
+    // //  针对只有一个值的，如果value被外面置空
+    // else if(value && value.length > 0 && !value[0]){
+    //   this.tags = []
+    //   this.tagsId = []
+    //   this.newTag = ''
+    // }
   }
 
   resetByOutside() {
@@ -259,7 +267,10 @@ export default class MultipleSearchInput<T> extends Vue {
     if(this.handleValidate && !this.handleValidate(item.value)) return
     // 检查不重复添加已经存在的tag
     if(this.tagsId.find(el => el === item.value))return
-    this.options.length === 0 && !(this.curOptions.find(el => el.value === item.value)) && this.curOptions.push(item)
+    if(!(this.checkInDataOption(item.value))){
+      this.curOptions.push(item)
+      this.setDataOptions([item])
+    }
     addTag(item.text)
     this.$nextTick(() => {
       this.tagsId.push(item.value)
@@ -268,6 +279,10 @@ export default class MultipleSearchInput<T> extends Vue {
       this.$emit('fetch-data', '')
     })
    
+  }
+
+  checkInDataOption(value: any) {
+    return this.dataOptions.find(el => el.value === value)
   }
 
   fetchMoreData() {
