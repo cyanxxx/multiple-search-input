@@ -246,7 +246,7 @@ export default class MultipleSearchInput<T> extends Vue {
     const obj = options.find(el => el.text.trim() === tag)
     //  不存在list的时候直接删除
     const deleteTagId = obj ? obj.value : tag
-    deleteTagId && (this.tagsId = this.tagsId.filter(el => el !== deleteTagId))
+    deleteTagId && (this.tagsId = this.tagsId.filter(el => el !== (typeof deleteTagId === 'string'? deleteTagId.trim() : deleteTagId)))
     this.isStringValue ? this.$emit('change', '') : this.$emit('change', [...this.tagsId])
     this.newTag = ''
   }
