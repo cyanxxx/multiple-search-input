@@ -1,5 +1,5 @@
 ## Tag-Input
-![示例](https://github.com/cyanxxx/multiple-search-input/blob/v1.0/examples.png)
+![示例](./examples.png)
 ### 基于vue-bootstrap-typeahead二次开发组件，支持输入多个tag和tag的远程搜索组件。
 
 ### 特别注意
@@ -44,3 +44,6 @@ Vue.use(multipleSearchInputPlugin);
 
 ### 如何链接到别的包本地调试
 - 运行`npm run dev`,将`package.json`中的main改为`dist/multipleSearchInput.js`, 并运行`npm link`将包链接到本地全局，再在需要调试的项目运行`npm link multiple-search-input`。需要调试的项目还需要`npm install source-map-loader`配置webpack.config
+
+### 组件数据同步流程图
+![示例](./multiple-search-input.png)
