@@ -190,6 +190,8 @@ export default class SearchInput extends mixins(VueBootstrapTypeahead) {
       const match = this.data.filter((el: {value: string; text: string}) => el.text === trimValue)
       if(match.length > 0){
         this.$emit('hit', {value: match[0].value, text: match[0].text})
+      }else{
+        this.$emit('blur')
       }
     } 
     

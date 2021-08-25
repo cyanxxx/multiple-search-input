@@ -40,6 +40,7 @@ Vue.use(multipleSearchInputPlugin);
 | fetch-data  | (val: string) => void; | 输入之后得到的值（可以在此调用远程搜索api） |
 | fetch-more-data | (val: string) => void; | 触发滚动到底部的时候触发 | 
 | get-option | (val: {text: string; value: T}<T>[]) => void; | 获取当前已被选中的tag option(对于得不到初始option,在页面返回的时候可以在option中传入) |
+| blur | () => void; | 当输入后没有匹配或者选择list里面的value,触发失去焦点时(对于远程搜的时候，可以利用这个钩子来清空list) |
 | change[v-model] | (val: string[]) => void; |  |
 
 ### 如何链接到别的包本地调试
