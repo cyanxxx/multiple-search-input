@@ -33,6 +33,10 @@
        <p>已选值： {{fifthVal}}, list: {{asyncDefaultValue}}</p>
     </div>
     <div>
+      <p>没有选值，disabled状态</p>
+       <MultipleSearchInput v-model="thirdVal" :list="list" disabled></MultipleSearchInput>
+    </div>
+    <div>
       <p>远程拿value默认值，翻页管理, 使用最好加多一层抽象，来集中管理pageNum，busy, loadedAll, total</p>
        <MultipleSearchInput v-model="longVal" :list="longList" infinite  :busy="busy" @fetch-data="fetchOtherData" @fetch-more-data="fetchMoreData"></MultipleSearchInput>
        <p>已选值： {{longVal}}, list: {{longList}}</p>

@@ -46,5 +46,12 @@ Vue.use(multipleSearchInputPlugin);
 ### 如何链接到别的包本地调试
 - 运行`npm run dev`,将`package.json`中的main改为`dist/multipleSearchInput.js`, 并运行`npm link`将包链接到本地全局，再在需要调试的项目运行`npm link multiple-search-input`。需要调试的项目还需要`npm install source-map-loader`配置webpack.config
 
+### 启动命令详解：
+- `npm run start`: 本地demo启本地服务器
+- `nom run dev`: 打一个dev环境的js包
+- `nom run start:demo`: 打一个prod环境的包但不抽离vue,vue-class-component,vue-property-decorator,方便直接引入js，而不是通过npm本地引入
+- `nom run build`: 打prod包发布新版本
+- `pre-publish`: 打包并改版本号
+
 ### 组件数据同步流程图
 ![示例](./multiple-search-input.png)

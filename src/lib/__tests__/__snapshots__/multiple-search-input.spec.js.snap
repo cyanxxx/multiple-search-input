@@ -127,6 +127,19 @@ exports[`Demo render as usual 1`] = `
    
   <div>
     <p>
+      没有选值，disabled状态
+    </p>
+     
+    <multiplesearchinput-stub
+      disabled="true"
+      list="[object Object],[object Object],[object Object]"
+      options=""
+      value=""
+    />
+  </div>
+   
+  <div>
+    <p>
       远程拿value默认值，翻页管理, 使用最好加多一层抽象，来集中管理pageNum，busy, loadedAll, total
     </p>
      

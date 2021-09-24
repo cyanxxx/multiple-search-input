@@ -43,6 +43,12 @@
     <slot></slot>
   </div>
 </template>
+<style scoped>
+/* fix: disabled not have a value */
+.multiple-input{
+  min-height: 31px;
+}
+</style>
 <script lang="ts">
 import { Vue, Component, Prop, Model, Watch, Provide } from 'vue-property-decorator'
 import SearchInput from './search-input.vue'
