@@ -32,7 +32,23 @@
                 </b-form-tag>
             </li>
           </ul>
-         <search-input v-if="!reachLimit && !inputDisable" ref="input" v-model="newTag" :tags-id="id" :canFreeText="canFreeText" :disabled="reachLimit" :busy="busy" class="d-inline-block" inputClass="border-0" :data="showList"  :serializer="item => item.text" v-bind="$attrs" :minMatchingChars="1" :maxMatches="100" :style="`width: ${oneText ? '100%' : 'auto'}`" @hit="handleHit(addTag, $event)"
+         <search-input 
+           v-if="!reachLimit && !inputDisable" 
+           ref="input" 
+           v-model="newTag" 
+           :tags-id="id" 
+           :canFreeText="canFreeText" 
+           :disabled="reachLimit" 
+           :busy="busy" 
+           class="search-input d-inline-block" 
+           inputClass="border-0" 
+           :data="showList"  
+           :serializer="item => item.text" 
+           v-bind="$attrs" 
+           :minMatchingChars="1" 
+           :maxMatches="100" 
+           :style="`width: ${oneText ? '100%' : 'auto'}`" 
+           @hit="handleHit(addTag, $event)"
            @stop-fetch="handleCancelFetch"
            @fetch-more-data="fetchMoreData"
            @blur="$emit('blur')"
@@ -47,6 +63,9 @@
 /* fix: disabled not have a value */
 .multiple-input{
   min-height: 31px;
+}
+.search-input{
+  position: relative;
 }
 </style>
 <script lang="ts">
